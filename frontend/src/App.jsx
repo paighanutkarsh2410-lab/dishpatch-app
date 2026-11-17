@@ -16,7 +16,7 @@ function Header() {
     <header className="site-header">
       <div className="header-inner">
         <Link to="/" className="brand">
-          <span className="brand-mark">S</span>
+          <span className="brand-mark">D</span>
           <span>dishpatch<span className="brand-dot">.</span></span>
         </Link>
         <span className="header-tagline">GOOD FOOD, DELIVERED WITH LOVE.</span>

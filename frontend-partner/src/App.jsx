@@ -57,7 +57,7 @@ function Shell({ children, live }) {
     <div className="shell">
       <aside className="sidebar">
         <div className="brand">
-          <span className="brand-mark">S</span>
+          <span className="brand-mark">D</span>
           <span>dishpatch <em>partner</em></span>
         </div>
 

@@ -30,7 +30,7 @@ export default function Login() {
     <main className="login-page">
       <section className="login-card">
         <div className="brand large">
-          <span className="brand-mark">S</span>
+          <span className="brand-mark">D</span>
           <span>dishpatch <em>partner</em></span>
         </div>
         <h1>Restaurant console</h1>
