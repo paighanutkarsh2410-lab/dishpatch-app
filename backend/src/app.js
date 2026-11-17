@@ -33,7 +33,7 @@ app.use("/api/partner", partnerRoutes);
 
 app.get("/", (req, res) => {
   res.json({
-    message: "Swiggy DevSecOps API",
+    message: "Dishpatch API",
     version: "1.0.0"
   });
 });
@@ -44,7 +44,7 @@ app.get("/metrics", metricsHandler);
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "UP",
-    service: "swiggy-devsecops-backend"
+    service: "dishpatch-backend"
   });
 });
 

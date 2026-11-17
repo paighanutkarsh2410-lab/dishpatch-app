@@ -1,16 +1,14 @@
-# Swiggy DevSecOps App
+# Dishpatch App
 
-[![CI](https://github.com/paighanutkarsh2410-lab/swiggy-devsecops-app/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/paighanutkarsh2410-lab/swiggy-devsecops-app/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/paighanutkarsh2410-lab/swiggy-devsecops-app/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/paighanutkarsh2410-lab/swiggy-devsecops-app/actions/workflows/codeql.yml)
+[![CI](https://github.com/paighanutkarsh2410-lab/dishpatch-app/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/paighanutkarsh2410-lab/dishpatch-app/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/paighanutkarsh2410-lab/dishpatch-app/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/paighanutkarsh2410-lab/dishpatch-app/actions/workflows/codeql.yml)
 ![Images signed with cosign](https://img.shields.io/badge/images-signed%20with%20cosign-2e7d32)
 ![SBOM: CycloneDX](https://img.shields.io/badge/SBOM-CycloneDX-1565c0)
 ![DAST: OWASP ZAP](https://img.shields.io/badge/DAST-OWASP%20ZAP-6a1b9a)
 
 A food delivery app, with a customer website and a restaurant partner console, used as the workload for an end-to-end DevSecOps project. The app is deliberately small; the focus is on how code is tested, scanned, signed and delivered.
 
-Its Kubernetes, GitOps and cloud side lives in [swiggy-devsecops-infra](https://github.com/paighanutkarsh2410-lab/swiggy-devsecops-infra).
-
-This is a personal learning project and is not affiliated with Swiggy.
+Its Kubernetes, GitOps and cloud side lives in [dishpatch-infra](https://github.com/paighanutkarsh2410-lab/dishpatch-infra).
 
 ## Highlights
 
@@ -99,9 +97,9 @@ Check an image yourself (needs cosign):
 
 ```bash
 cosign verify \
-  --certificate-identity https://github.com/paighanutkarsh2410-lab/swiggy-devsecops-app/.github/workflows/ci.yml@refs/heads/main \
+  --certificate-identity https://github.com/paighanutkarsh2410-lab/dishpatch-app/.github/workflows/ci.yml@refs/heads/main \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-  ghcr.io/paighanutkarsh2410-lab/swiggy-devsecops-backend:<commit-sha>
+  ghcr.io/paighanutkarsh2410-lab/dishpatch-backend:<commit-sha>
 ```
 
 `cosign verify-attestation --type cyclonedx` with the same flags checks the SBOM attestation and prints it.
@@ -110,19 +108,19 @@ Known limitation: both websites keep the login token in `localStorage`, where an
 
 ### Deployment (GitOps)
 
-This repo never deploys anything itself. After the images are published and signed, CI opens a pull request in [swiggy-devsecops-infra](https://github.com/paighanutkarsh2410-lab/swiggy-devsecops-infra) that sets the new image tag and digests. Merging that pull request is the deployment: Argo CD rolls it out to the Kubernetes cluster, and reverting it rolls back. See the infra repo's README for the full flow.
+This repo never deploys anything itself. After the images are published and signed, CI opens a pull request in [dishpatch-infra](https://github.com/paighanutkarsh2410-lab/dishpatch-infra) that sets the new image tag and digests. Merging that pull request is the deployment: Argo CD rolls it out to the Kubernetes cluster, and reverting it rolls back. See the infra repo's README for the full flow.
 
 The job needs a token that can open pull requests in the infra repo. Without it the job does nothing and says so. To set it up:
 
 1. In GitHub, go to **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**.
-2. Give it access to **only** `swiggy-devsecops-infra`, with **Contents: Read and write** and **Pull requests: Read and write**. Set an expiry date.
+2. Give it access to **only** `dishpatch-infra`, with **Contents: Read and write** and **Pull requests: Read and write**. Set an expiry date.
 3. In this repo, go to **Settings → Secrets and variables → Actions → New repository secret**, name it `INFRA_REPO_TOKEN` and paste the token.
 
 | Image | Contents |
 |---|---|
-| `ghcr.io/paighanutkarsh2410-lab/swiggy-devsecops-backend` | Express API |
-| `ghcr.io/paighanutkarsh2410-lab/swiggy-devsecops-frontend` | Customer app on Nginx |
-| `ghcr.io/paighanutkarsh2410-lab/swiggy-devsecops-partner` | Partner console on Nginx |
+| `ghcr.io/paighanutkarsh2410-lab/dishpatch-backend` | Express API |
+| `ghcr.io/paighanutkarsh2410-lab/dishpatch-frontend` | Customer app on Nginx |
+| `ghcr.io/paighanutkarsh2410-lab/dishpatch-partner` | Partner console on Nginx |
 
 ## Tech stack
 
@@ -138,8 +136,8 @@ The job needs a token that can open pull requests in the infra repo. Without it 
 You need Docker with the Compose plugin.
 
 ```bash
-git clone https://github.com/paighanutkarsh2410-lab/swiggy-devsecops-app.git
-cd swiggy-devsecops-app
+git clone https://github.com/paighanutkarsh2410-lab/dishpatch-app.git
+cd dishpatch-app
 cp .env.example .env
 ```
 
@@ -170,7 +168,7 @@ docker exec \
   -e STAFF_PASSWORD="choose-a-password" \
   -e STAFF_RESTAURANT_ID=1 \
   -e STAFF_ROLE=OWNER \
-  swiggy-backend node src/scripts/createStaff.js
+  dishpatch-backend node src/scripts/createStaff.js
 ```
 
 Leave out `STAFF_ROLE` to create a `STAFF` account.
@@ -183,8 +181,8 @@ Leave out `STAFF_ROLE` to create a `STAFF` account.
 A database created before these features needs the migrations, in order. Both are safe to run more than once:
 
 ```bash
-docker exec -i swiggy-postgres psql -U swiggy_app -d swiggy_db < backend/db/migrations/001_add_users.sql
-docker exec -i swiggy-postgres psql -U swiggy_app -d swiggy_db < backend/db/migrations/002_partner_console.sql
+docker exec -i dishpatch-postgres psql -U dishpatch_app -d dishpatch_db < backend/db/migrations/001_add_users.sql
+docker exec -i dishpatch-postgres psql -U dishpatch_app -d dishpatch_db < backend/db/migrations/002_partner_console.sql
 ```
 
 ## Run the tests
@@ -237,13 +235,13 @@ The API serves Prometheus metrics at `GET /metrics` on port 3000. The path is ou
 
 | Metric | Type | What it measures |
 |---|---|---|
-| `swiggy_http_request_duration_seconds` | Histogram | Request time by `method`, `route` and `status_code`. Routes are patterns such as `/api/orders/:id`, never raw URLs, so the number of series stays small |
-| `swiggy_orders_created_total` | Counter | Orders placed, by `restaurant_id` |
-| `swiggy_order_status_changes_total` | Counter | Status changes, by new `status` and `actor` (`customer` or `partner`) |
-| `swiggy_partner_event_streams` | Gauge | Partner consoles connected to the live order stream |
-| `swiggy_process_*`, `swiggy_nodejs_*` | Various | CPU, memory, event loop lag and garbage collection |
+| `dishpatch_http_request_duration_seconds` | Histogram | Request time by `method`, `route` and `status_code`. Routes are patterns such as `/api/orders/:id`, never raw URLs, so the number of series stays small |
+| `dishpatch_orders_created_total` | Counter | Orders placed, by `restaurant_id` |
+| `dishpatch_order_status_changes_total` | Counter | Status changes, by new `status` and `actor` (`customer` or `partner`) |
+| `dishpatch_partner_event_streams` | Gauge | Partner consoles connected to the live order stream |
+| `dishpatch_process_*`, `dishpatch_nodejs_*` | Various | CPU, memory, event loop lag and garbage collection |
 
-Every metric carries `app="swiggy-backend"`.
+Every metric carries `app="dishpatch-backend"`.
 
 ## Design decisions
 
@@ -265,9 +263,9 @@ Every metric carries `app="swiggy-backend"`.
 - [x] CodeQL, Dependabot and branch protection
 - [x] Login, order access control and order tracking
 - [x] Separate partner console with live orders and menu management
-- [x] Kubernetes deployment ([infra repo](https://github.com/paighanutkarsh2410-lab/swiggy-devsecops-infra))
+- [x] Kubernetes deployment ([infra repo](https://github.com/paighanutkarsh2410-lab/dishpatch-infra))
 - [x] Ansible and Terraform automation
 - [x] AWS deployment on K3s
 - [x] GitOps with Helm and Argo CD
-- [x] Monitoring with Prometheus and Grafana ([on kind](https://github.com/paighanutkarsh2410-lab/swiggy-devsecops-infra#monitoring), on demand)
+- [x] Monitoring with Prometheus and Grafana ([on kind](https://github.com/paighanutkarsh2410-lab/dishpatch-infra#monitoring), on demand)
 - [x] Supply-chain security: SBOMs, signed images deployed by digest, OWASP ZAP, pinned actions

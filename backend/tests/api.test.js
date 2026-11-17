@@ -148,7 +148,7 @@ test("GET /health returns UP", async () => {
 
   assert.equal(status, 200);
   assert.equal(body.status, "UP");
-  assert.equal(body.service, "swiggy-devsecops-backend");
+  assert.equal(body.service, "dishpatch-backend");
 });
 
 test("GET /health/db confirms database connectivity", async () => {
@@ -830,12 +830,12 @@ test("GET /metrics serves Prometheus metrics with route patterns, not raw URLs",
 
   const text = await metricsText();
 
-  assert.match(text, /swiggy_process_cpu_seconds_total/);
-  assert.match(text, /swiggy_http_request_duration_seconds_bucket\{/);
+  assert.match(text, /dishpatch_process_cpu_seconds_total/);
+  assert.match(text, /dishpatch_http_request_duration_seconds_bucket\{/);
   assert.match(text, /route="\/api\/restaurants\/:id"/);
   assert.match(text, /route="\/api\/restaurants\/:id\/menu"/);
   assert.doesNotMatch(text, /route="\/api\/restaurants\/1"/);
-  assert.match(text, /app="swiggy-backend"/);
+  assert.match(text, /app="dishpatch-backend"/);
 });
 
 test("order metrics count new orders and status changes", async () => {
@@ -847,13 +847,13 @@ test("order metrics count new orders and status changes", async () => {
   const after = await metricsText();
 
   assert.equal(
-    metricValue(after, "swiggy_orders_created_total", ['restaurant_id="1"']) -
-      metricValue(before, "swiggy_orders_created_total", ['restaurant_id="1"']),
+    metricValue(after, "dishpatch_orders_created_total", ['restaurant_id="1"']) -
+      metricValue(before, "dishpatch_orders_created_total", ['restaurant_id="1"']),
     1
   );
   assert.equal(
-    metricValue(after, "swiggy_order_status_changes_total", ['status="CONFIRMED"', 'actor="partner"']) -
-      metricValue(before, "swiggy_order_status_changes_total", ['status="CONFIRMED"', 'actor="partner"']),
+    metricValue(after, "dishpatch_order_status_changes_total", ['status="CONFIRMED"', 'actor="partner"']) -
+      metricValue(before, "dishpatch_order_status_changes_total", ['status="CONFIRMED"', 'actor="partner"']),
     1
   );
 });

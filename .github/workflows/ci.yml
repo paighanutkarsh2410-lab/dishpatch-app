@@ -1,4 +1,4 @@
-name: Swiggy DevSecOps CI
+name: Dishpatch CI
 
 on:
   push:
@@ -23,13 +23,13 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: swiggy_db
-          POSTGRES_USER: swiggy_app
-          POSTGRES_PASSWORD: swiggy_test_password
+          POSTGRES_DB: dishpatch_db
+          POSTGRES_USER: dishpatch_app
+          POSTGRES_PASSWORD: dishpatch_test_password
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U swiggy_app -d swiggy_db"
+          --health-cmd "pg_isready -U dishpatch_app -d dishpatch_db"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -37,9 +37,9 @@ jobs:
     env:
       DB_HOST: localhost
       DB_PORT: 5432
-      DB_NAME: swiggy_db
-      DB_USER: swiggy_app
-      DB_PASSWORD: swiggy_test_password
+      DB_NAME: dishpatch_db
+      DB_USER: dishpatch_app
+      DB_PASSWORD: dishpatch_test_password
       JWT_SECRET: ci-only-test-secret-not-used-anywhere-else
       PORT: 3000
 
@@ -113,9 +113,9 @@ jobs:
       # short-lived Sigstore certificate. Only used on pushes to main.
       id-token: write
     env:
-      BACKEND_IMAGE: ghcr.io/paighanutkarsh2410-lab/swiggy-devsecops-backend
-      FRONTEND_IMAGE: ghcr.io/paighanutkarsh2410-lab/swiggy-devsecops-frontend
-      PARTNER_IMAGE: ghcr.io/paighanutkarsh2410-lab/swiggy-devsecops-partner
+      BACKEND_IMAGE: ghcr.io/paighanutkarsh2410-lab/dishpatch-backend
+      FRONTEND_IMAGE: ghcr.io/paighanutkarsh2410-lab/dishpatch-frontend
+      PARTNER_IMAGE: ghcr.io/paighanutkarsh2410-lab/dishpatch-partner
       PUBLISH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     outputs:
       backend-digest: ${{ steps.publish.outputs.backend-digest }}
@@ -151,7 +151,7 @@ jobs:
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: image
-          image-ref: ghcr.io/paighanutkarsh2410-lab/swiggy-devsecops-backend:${{ github.sha }}
+          image-ref: ghcr.io/paighanutkarsh2410-lab/dishpatch-backend:${{ github.sha }}
           scanners: vuln,secret
           severity: HIGH,CRITICAL
           ignore-unfixed: true
@@ -162,7 +162,7 @@ jobs:
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: image
-          image-ref: ghcr.io/paighanutkarsh2410-lab/swiggy-devsecops-frontend:${{ github.sha }}
+          image-ref: ghcr.io/paighanutkarsh2410-lab/dishpatch-frontend:${{ github.sha }}
           scanners: vuln,secret
           severity: HIGH,CRITICAL
           ignore-unfixed: true
@@ -173,7 +173,7 @@ jobs:
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: image
-          image-ref: ghcr.io/paighanutkarsh2410-lab/swiggy-devsecops-partner:${{ github.sha }}
+          image-ref: ghcr.io/paighanutkarsh2410-lab/dishpatch-partner:${{ github.sha }}
           scanners: vuln,secret
           severity: HIGH,CRITICAL
           ignore-unfixed: true
@@ -298,7 +298,7 @@ jobs:
       contents: read
     env:
       # Fine-grained token with Contents and Pull requests write access to
-      # swiggy-devsecops-infra only. Without it this job does nothing.
+      # dishpatch-infra only. Without it this job does nothing.
       INFRA_REPO_TOKEN: ${{ secrets.INFRA_REPO_TOKEN }}
 
     steps:
@@ -322,7 +322,7 @@ jobs:
         if: steps.token.outputs.present == 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: paighanutkarsh2410-lab/swiggy-devsecops-infra
+          repository: paighanutkarsh2410-lab/dishpatch-infra
           token: ${{ secrets.INFRA_REPO_TOKEN }}
           path: infra
 

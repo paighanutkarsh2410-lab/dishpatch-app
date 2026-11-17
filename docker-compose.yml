@@ -1,12 +1,12 @@
 services:
   postgres:
     image: postgres:16
-    container_name: swiggy-postgres
+    container_name: dishpatch-postgres
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: swiggy_db
-      POSTGRES_USER: swiggy_app
+      POSTGRES_DB: dishpatch_db
+      POSTGRES_USER: dishpatch_app
       POSTGRES_PASSWORD: ${DB_PASSWORD}
 
     volumes:
@@ -14,27 +14,27 @@ services:
       - ./backend/db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U swiggy_app -d swiggy_db"]
+      test: ["CMD-SHELL", "pg_isready -U dishpatch_app -d dishpatch_db"]
       interval: 10s
       timeout: 5s
       retries: 5
 
     networks:
-      - swiggy-network
+      - dishpatch-network
 
   backend:
     build:
       context: ./backend
 
-    container_name: swiggy-backend
+    container_name: dishpatch-backend
     restart: unless-stopped
 
     environment:
       PORT: 3000
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_NAME: swiggy_db
-      DB_USER: swiggy_app
+      DB_NAME: dishpatch_db
+      DB_USER: dishpatch_app
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
 
@@ -46,7 +46,7 @@ services:
         condition: service_healthy
 
     networks:
-      swiggy-network:
+      dishpatch-network:
         # Nginx looks up the backend address once at startup, so the
         # backend keeps the same address when its container is recreated.
         ipv4_address: 172.28.0.10
@@ -54,8 +54,8 @@ services:
   frontend:
     build:
       context: ./frontend
-    image: swiggy-frontend:1.0.0
-    container_name: swiggy-frontend
+    image: dishpatch-frontend:1.0.0
+    container_name: dishpatch-frontend
     restart: unless-stopped
     ports:
       - "8080:8080"
@@ -63,15 +63,15 @@ services:
       backend:
         condition: service_healthy
     networks:
-      - swiggy-network
+      - dishpatch-network
 
   # Restaurant partner console. A separate site from the customer app,
   # sharing the same backend API.
   partner:
     build:
       context: ./frontend-partner
-    image: swiggy-partner:1.0.0
-    container_name: swiggy-partner
+    image: dishpatch-partner:1.0.0
+    container_name: dishpatch-partner
     restart: unless-stopped
     ports:
       - "8082:8080"
@@ -79,10 +79,10 @@ services:
       backend:
         condition: service_healthy
     networks:
-      - swiggy-network
+      - dishpatch-network
 
 networks:
-  swiggy-network:
+  dishpatch-network:
     driver: bridge
     ipam:
       config:

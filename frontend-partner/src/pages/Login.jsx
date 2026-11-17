@@ -31,10 +31,10 @@ export default function Login() {
       <section className="login-card">
         <div className="brand large">
           <span className="brand-mark">S</span>
-          <span>swiggy <em>partner</em></span>
+          <span>dishpatch <em>partner</em></span>
         </div>
         <h1>Restaurant console</h1>
-        <p className="subtle">Manage live orders and your menu. Accounts are set up by Swiggy for restaurant owners and their staff.</p>
+        <p className="subtle">Manage live orders and your menu. Accounts are set up by Dishpatch for restaurant owners and their staff.</p>
 
         <form onSubmit={submit}>
           <label>

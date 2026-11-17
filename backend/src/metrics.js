@@ -7,13 +7,13 @@ import client from "prom-client";
 export const registry = new client.Registry();
 
 // "app", not "service": Prometheus adds its own service label to every target.
-registry.setDefaultLabels({ app: "swiggy-backend" });
+registry.setDefaultLabels({ app: "dishpatch-backend" });
 
 // CPU, memory, event loop lag, garbage collection and so on.
-client.collectDefaultMetrics({ register: registry, prefix: "swiggy_" });
+client.collectDefaultMetrics({ register: registry, prefix: "dishpatch_" });
 
 export const httpRequestDuration = new client.Histogram({
-  name: "swiggy_http_request_duration_seconds",
+  name: "dishpatch_http_request_duration_seconds",
   help: "API request duration in seconds, by method, route and status code",
   labelNames: ["method", "route", "status_code"],
   buckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
@@ -21,21 +21,21 @@ export const httpRequestDuration = new client.Histogram({
 });
 
 export const ordersCreated = new client.Counter({
-  name: "swiggy_orders_created_total",
+  name: "dishpatch_orders_created_total",
   help: "Orders placed by customers",
   labelNames: ["restaurant_id"],
   registers: [registry]
 });
 
 export const orderStatusChanges = new client.Counter({
-  name: "swiggy_order_status_changes_total",
+  name: "dishpatch_order_status_changes_total",
   help: "Order status changes, by new status and who made them",
   labelNames: ["status", "actor"],
   registers: [registry]
 });
 
 export const partnerEventStreams = new client.Gauge({
-  name: "swiggy_partner_event_streams",
+  name: "dishpatch_partner_event_streams",
   help: "Partner consoles currently connected to the live order stream",
   registers: [registry]
 });

@@ -16,11 +16,11 @@ INFRA_DIR="$1"
 SHA="$2"
 SHORT="${SHA:0:7}"
 BRANCH="deploy/app-$SHORT"
-VALUES_FILES=(charts/swiggy/values-kind.yaml charts/swiggy/values-aws.yaml)
+VALUES_FILES=(charts/dishpatch/values-kind.yaml charts/dishpatch/values-aws.yaml)
 declare -A DIGESTS=(
-  [swiggy-devsecops-backend]="${BACKEND_DIGEST:-}"
-  [swiggy-devsecops-frontend]="${FRONTEND_DIGEST:-}"
-  [swiggy-devsecops-partner]="${PARTNER_DIGEST:-}"
+  [dishpatch-backend]="${BACKEND_DIGEST:-}"
+  [dishpatch-frontend]="${FRONTEND_DIGEST:-}"
+  [dishpatch-partner]="${PARTNER_DIGEST:-}"
 )
 
 if ! [[ "$SHA" =~ ^[0-9a-f]{40}$ ]]; then
@@ -67,23 +67,23 @@ if gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' | g
   exit 0
 fi
 
-git config user.name "swiggy-app-ci"
-git config user.email "swiggy-app-ci@users.noreply.github.com"
+git config user.name "dishpatch-app-ci"
+git config user.email "dishpatch-app-ci@users.noreply.github.com"
 git switch -c "$BRANCH"
 git commit -q -am "Deploy app $SHORT" \
-  -m "Images built, scanned, published and signed by swiggy-devsecops-app CI for commit $SHA."
+  -m "Images built, scanned, published and signed by dishpatch-app CI for commit $SHA."
 git push -q origin "$BRANCH"
 
 gh pr create \
   --base main \
   --head "$BRANCH" \
   --title "Deploy app $SHORT" \
-  --body "Deploys [\`$SHORT\`](https://github.com/paighanutkarsh2410-lab/swiggy-devsecops-app/commit/$SHA) to every environment, pinned by digest:
+  --body "Deploys [\`$SHORT\`](https://github.com/paighanutkarsh2410-lab/dishpatch-app/commit/$SHA) to every environment, pinned by digest:
 
 | Image | Digest |
 |---|---|
-| swiggy-devsecops-backend | \`${DIGESTS[swiggy-devsecops-backend]}\` |
-| swiggy-devsecops-frontend | \`${DIGESTS[swiggy-devsecops-frontend]}\` |
-| swiggy-devsecops-partner | \`${DIGESTS[swiggy-devsecops-partner]}\` |
+| dishpatch-backend | \`${DIGESTS[dishpatch-backend]}\` |
+| dishpatch-frontend | \`${DIGESTS[dishpatch-frontend]}\` |
+| dishpatch-partner | \`${DIGESTS[dishpatch-partner]}\` |
 
 All three images passed the app repo's tests, Trivy scans and OWASP ZAP scan, and were signed with cosign by its CI, with a CycloneDX SBOM attached as a signed attestation. This repo's CI verifies those signatures before this can merge. Once merged, Argo CD deploys it to the kind cluster, and the next \`aws-deploy.sh\` deploys it to AWS."

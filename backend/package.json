@@ -1,5 +1,5 @@
 {
-  "name": "swiggy-devsecops-backend",
+  "name": "dishpatch-backend",
   "version": "1.0.0",
   "description": "Backend API for a cloud-native food delivery application",
   "type": "module",

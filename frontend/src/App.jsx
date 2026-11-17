@@ -17,7 +17,7 @@ function Header() {
       <div className="header-inner">
         <Link to="/" className="brand">
           <span className="brand-mark">S</span>
-          <span>swiggy<span className="brand-dot">.</span></span>
+          <span>dishpatch<span className="brand-dot">.</span></span>
         </Link>
         <span className="header-tagline">GOOD FOOD, DELIVERED WITH LOVE.</span>
         <nav className="header-nav">
@@ -37,7 +37,7 @@ function Header() {
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>swiggy<span className="brand-dot">.</span></p>
+      <p>dishpatch<span className="brand-dot">.</span></p>
       <span>A cloud-native food delivery demo · Built with React, Node.js & PostgreSQL</span>
     </footer>
   );

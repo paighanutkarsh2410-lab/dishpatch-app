@@ -6,5 +6,5 @@ const PORT = process.env.PORT || 3000;
 assertAuthConfigured();
 
 app.listen(PORT, () => {
-  console.log(`Swiggy DevSecOps API running on port ${PORT}`);
+  console.log(`Dishpatch API running on port ${PORT}`);
 });
